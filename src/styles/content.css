@@ -1,0 +1,253 @@
+/* ==========================================================================
+   CONTENT — typography and blocks rendered inside a window body.
+   These class names are produced by src/render.ts. Nothing here knows what
+   the copy says.
+   ========================================================================== */
+
+.win-body h2 {
+  font-family: var(--px);
+  font-size: 10px;
+  line-height: 1.9;
+  margin: 2px 0 10px;
+  color: var(--ink-head);
+}
+.win-body h3 {
+  font-family: var(--px);
+  font-size: 7px;
+  letter-spacing: 0.1em;
+  margin: 14px 0 5px;
+  color: var(--ink-sub);
+}
+.win-body p {
+  margin: 0 0 8px;
+  max-width: 70ch;
+  font-size: 18px;
+}
+.win-body ul {
+  margin: 0 0 8px;
+  padding-left: 16px;
+}
+.win-body li {
+  margin: 0;
+}
+.win-body b {
+  color: var(--ink-head);
+}
+.win-body a {
+  color: #0000c8;
+}
+
+/* staggered content reveal — direct children of a window body cascade in */
+.win-body > * {
+  animation: blockIn 0.34s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 40ms);
+}
+@keyframes blockIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 5px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.lead {
+  font-size: 19px;
+}
+
+.quote {
+  color: var(--ink-quote);
+  border-left: 4px solid var(--ink-quote);
+  padding-left: 8px;
+  margin: 0 0 8px;
+}
+
+hr.pix {
+  border: 0;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--sh) 0 2px, transparent 2px 4px);
+  margin: 10px 0;
+}
+
+.panel {
+  padding: 7px 9px;
+  margin: 0 0 8px;
+  background: var(--face);
+  border: 2px solid;
+  border-color: var(--hi) var(--sh) var(--sh) var(--hi);
+}
+.panel > h3 {
+  font-family: var(--px);
+  font-size: 7px;
+  margin: 0 0 6px;
+  color: var(--ink-head);
+  letter-spacing: 0.08em;
+}
+
+/* Asymmetric on purpose: three equal columns read as a template.
+   The first panel carries more text, so it gets more room. */
+.cols {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr 0.85fr;
+  gap: 7px;
+}
+@media (max-width: 700px) {
+  .cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.chip {
+  font-family: var(--px);
+  font-size: 6px;
+  line-height: 1.6;
+  padding: 4px 6px;
+  background: var(--face);
+  color: #000;
+  border: 2px solid;
+  border-color: var(--hi) var(--sh) var(--sh) var(--hi);
+}
+.chip.invert {
+  background: var(--sel);
+  color: #fff;
+  border-color: #4a4aff #000040 #000040 #4a4aff;
+}
+
+.metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 6px 0;
+}
+.metric {
+  font-family: var(--px);
+  font-size: 6px;
+  line-height: 1.6;
+  padding: 4px 6px;
+  background: #000;
+  color: var(--phosphor);
+  border: 2px solid var(--sh);
+}
+
+.btn {
+  display: inline-block;
+  padding: 5px 11px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #000;
+  background: var(--face);
+  font-family: var(--px);
+  font-size: 7px;
+  line-height: 1.6;
+  border: 2px solid;
+  border-color: var(--hi) var(--dk) var(--dk) var(--hi);
+  box-shadow: inset 1px 1px 0 var(--face), inset -1px -1px 0 var(--sh);
+}
+.btn:hover {
+  background: var(--face-lit);
+}
+.btn:active {
+  border-color: var(--dk) var(--hi) var(--hi) var(--dk);
+  box-shadow: none;
+  transform: translate3d(1px, 1px, 0);
+}
+.btn.on {
+  border-color: var(--dk) var(--hi) var(--hi) var(--dk);
+  box-shadow: none;
+  background: repeating-conic-gradient(#bcbcbc 0 25%, #d6d6d6 0 50%) 0 0 / 4px 4px;
+}
+
+/* ---------------- projects ---------------- */
+.proj {
+  margin: 0 0 12px;
+  padding: 8px 9px;
+  background: var(--face);
+  border: 2px solid;
+  border-color: var(--hi) var(--sh) var(--sh) var(--hi);
+}
+.proj h3 {
+  font-family: var(--px);
+  font-size: 8px;
+  line-height: 1.8;
+  margin: 0;
+  color: var(--ink-head);
+}
+.proj .yr {
+  font-family: var(--px);
+  font-size: 6px;
+  color: var(--ink-sub);
+  margin: 4px 0 6px;
+  letter-spacing: 0.2em;
+}
+/* Attribution badge. Deliberately plain and legible rather than tucked away —
+   saying a project was teamwork should not look like a disclaimer. */
+.proj .credit {
+  display: inline-block;
+  font-family: var(--px);
+  font-size: 6px;
+  line-height: 1.6;
+  padding: 4px 6px;
+  margin: 0 0 6px;
+  background: var(--sel);
+  color: #fff;
+  border: 2px solid;
+  border-color: #4a4aff #000040 #000040 #4a4aff;
+}
+.proj .body {
+  background: #fff;
+  padding: 6px 8px;
+  border: 2px solid;
+  border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+}
+.proj .actions {
+  margin: 6px 0 0;
+}
+
+/* ---------------- contact tiles ---------------- */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 6px;
+  margin-top: 6px;
+}
+.tile {
+  display: block;
+  padding: 7px 9px;
+  text-decoration: none;
+  color: #000;
+  background: var(--face);
+  border: 2px solid;
+  border-color: var(--hi) var(--dk) var(--dk) var(--hi);
+}
+.tile:hover,
+.tile:focus-visible {
+  background: var(--sel);
+  color: #fff;
+}
+.tile b {
+  display: block;
+  font-family: var(--px);
+  font-size: 6px;
+  letter-spacing: 0.1em;
+  color: var(--ink-head);
+  margin-bottom: 3px;
+}
+.tile:hover b,
+.tile:focus-visible b {
+  color: var(--phosphor);
+}
+.tile span {
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+.tile:active {
+  transform: translate3d(1px, 1px, 0);
+}

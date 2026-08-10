@@ -1,0 +1,103 @@
+/* ==========================================================================
+   TOKENS — palette, type, layer scale, CRT intensity variables.
+   The 1996 system look lives here. Change a colour once, it changes everywhere.
+   Font faces are declared in /public/fonts/fonts.css, linked from index.html.
+   ========================================================================== */
+
+:root {
+  /* ---- system palette ---- */
+  --desk: #008080;
+  --face: #c0c0c0;
+  --face-lit: #dfdfdf;
+  --hi: #ffffff;
+  --sh: #808080;
+  --dk: #000000;
+  --title-a: #000080;
+  --title-b: #1084d0;
+  --title-off-a: #808080;
+  --title-off-b: #b5b5b5;
+  --sel: #000080;
+  --ink-head: #000080;
+  --ink-sub: #800000;
+  --ink-quote: #008000;
+  --phosphor: #39ff8a;
+
+  /* close button */
+  --danger: #c42b1c;
+  --danger-lit: #e03a28;
+  --danger-hi: #ff8a7a;
+  --danger-dk: #7a1005;
+
+  /* ---- type ---- */
+  --px: 'Press Start 2P', 'Courier New', monospace;
+  --term: 'VT323', 'Courier New', monospace;
+
+  /* ---- metrics ---- */
+  --taskbar-h: 34px;
+  --bezel: 22px;
+
+  /* ---- layer scale: every z-index in the project comes from here ---- */
+  --z-wallpaper: 0;
+  --z-desktop: 1;
+  --z-window-base: 100;
+  --z-taskbar: 900;
+  --z-startmenu: 950;
+  --z-dragghost: 8000;
+  --z-crt: 9000;
+  --z-boot: 9500;
+
+  /* ---- motion ---- */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --stagger: 45ms;
+
+  /* ---- CRT intensity. SOFT is the default; every overlay reads these. ---- */
+  --scan-a: 0.085;
+  --scan-pitch: 3px;
+  --grille-a: 0.028;
+  --vig-a: 0.28;
+  --vig-a2: 0.18;
+  --vig-blur: 130px;
+  --glare-a: 0.07;
+  --roll-a: 0.022;
+  --bloom-blur: 1px;
+  --bloom-bright: 1.05;
+  --bloom-o: 0.12;
+  --ca: 0.3px;
+  --ca-a: 0.22;
+  --flick: 0.992;
+  --phos-sat: 2.4;
+}
+
+body[data-crt='medium'] {
+  --scan-a: 0.17;
+  --grille-a: 0.05;
+  --vig-a: 0.42;
+  --vig-a2: 0.3;
+  --vig-blur: 110px;
+  --glare-a: 0.11;
+  --roll-a: 0.035;
+  --bloom-blur: 1.6px;
+  --bloom-bright: 1.12;
+  --bloom-o: 0.2;
+  --ca: 0.5px;
+  --ca-a: 0.33;
+  --flick: 0.98;
+  --phos-sat: 3.2;
+}
+
+body[data-crt='heavy'] {
+  --scan-a: 0.32;
+  --grille-a: 0.09;
+  --vig-a: 0.62;
+  --vig-a2: 0.48;
+  --vig-blur: 90px;
+  --glare-a: 0.16;
+  --roll-a: 0.055;
+  --bloom-blur: 2.4px;
+  --bloom-bright: 1.22;
+  --bloom-o: 0.3;
+  --ca: 0.7px;
+  --ca-a: 0.45;
+  --flick: 0.965;
+  --phos-sat: 4.2;
+}

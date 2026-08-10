@@ -1,0 +1,317 @@
+/* ==========================================================================
+   CRT — monitor case, tube, and the overlay stack.
+   Layer order: bloom → grille → scanlines → roll → glare → vignette.
+   Every overlay is pointer-events:none and sits above the stage, never inside
+   a scrolling container, so it never triggers a repaint while content scrolls.
+   ========================================================================== */
+
+#monitorCase {
+  position: fixed;
+  inset: 0;
+  padding: var(--bezel);
+  padding: max(var(--bezel), env(safe-area-inset-top)) max(var(--bezel), env(safe-area-inset-right))
+    max(var(--bezel), env(safe-area-inset-bottom)) max(var(--bezel), env(safe-area-inset-left));
+  background: linear-gradient(180deg, #4a4741 0%, #39362f 6%, #2b2925 55%, #201e1b 100%);
+  box-shadow: inset 0 0 0 2px #55524a, inset 0 0 60px rgba(0, 0, 0, 0.9);
+}
+
+/* brand plate */
+#monitorCase::before {
+  content: 'MUJAHED  1996';
+  position: absolute;
+  left: 26px;
+  bottom: 4px;
+  font-family: var(--px);
+  font-size: 7px;
+  color: #6c675c;
+  letter-spacing: 0.16em;
+}
+
+#led {
+  position: absolute;
+  right: 28px;
+  bottom: 6px;
+  width: 8px;
+  height: 8px;
+  background: var(--phosphor);
+  box-shadow: 0 0 8px var(--phosphor), 0 0 18px rgba(57, 255, 138, 0.6);
+  animation: pulse 3.2s infinite;
+}
+body[data-power='off'] #led {
+  background: #5a2020;
+  box-shadow: none;
+  animation: none;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+#powerBtn {
+  position: absolute;
+  right: 44px;
+  bottom: 2px;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  background: #2a2824;
+  border: 2px solid;
+  border-color: #5b574e #131210 #131210 #5b574e;
+}
+#powerBtn svg {
+  width: 10px;
+  height: 10px;
+}
+#powerBtn:active {
+  border-color: #131210 #5b574e #5b574e #131210;
+}
+
+/* ---------- the tube ---------- */
+#screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  border-radius: 14px / 22px;
+  box-shadow: 0 0 0 3px #171613, 0 0 0 6px #34322c, inset 0 0 26px rgba(0, 0, 0, 0.45);
+  transform-origin: center;
+}
+
+body[data-power='off'] #screen {
+  animation: crtOff 0.45s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+}
+@keyframes crtOff {
+  40% {
+    transform: scale(1, 0.02);
+    filter: brightness(3);
+  }
+  70% {
+    transform: scale(0.35, 0.006);
+    filter: brightness(5);
+  }
+  100% {
+    transform: scale(0, 0.001);
+    filter: brightness(9);
+    opacity: 0.2;
+  }
+}
+body[data-power='on'] #screen {
+  animation: crtOn 0.5s ease forwards;
+}
+@keyframes crtOn {
+  0% {
+    transform: scale(0, 0.001);
+    filter: brightness(9);
+  }
+  45% {
+    transform: scale(1, 0.02);
+    filter: brightness(3);
+  }
+  100% {
+    transform: none;
+    filter: none;
+  }
+}
+
+#stage {
+  position: absolute;
+  inset: 0;
+}
+
+/* --------------------------------------------------------------------------
+   SCREEN REVEAL — plays once, after the boot log finishes.
+
+   A cold tube does not snap on. A bright line strikes across the middle,
+   swells outward, and the picture rises out of black. Sits above the stage but
+   below the CRT overlays, so the scanlines are already there as it appears.
+   -------------------------------------------------------------------------- */
+#reveal {
+  position: absolute;
+  inset: 0;
+  z-index: calc(var(--z-crt) - 1);
+  pointer-events: none;
+  background: #000;
+  opacity: 1;
+}
+/* Before the boot finishes the tube is simply black — no animation yet. */
+body.booted #reveal {
+  animation: revealFade 1.25s cubic-bezier(0.33, 0.9, 0.28, 1) forwards;
+}
+@keyframes revealFade {
+  0% {
+    opacity: 1;
+  }
+  22% {
+    opacity: 0.92;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* the strike line */
+#reveal::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  margin-top: -1px;
+  background: #dffff0;
+  box-shadow: 0 0 18px 5px rgba(190, 255, 225, 0.75);
+  opacity: 0;
+  transform: scaleX(0.04);
+}
+body.booted #reveal::after {
+  animation: revealLine 0.72s cubic-bezier(0.3, 0.85, 0.25, 1) forwards;
+}
+@keyframes revealLine {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.04) scaleY(1);
+  }
+  12% {
+    opacity: 1;
+    transform: scaleX(1) scaleY(1);
+  }
+  45% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1) scaleY(90);
+  }
+}
+
+/* ---------- overlays ---------- */
+.crt {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-crt);
+}
+
+#scanlines {
+  background: repeating-linear-gradient(
+    rgba(0, 0, 0, var(--scan-a)) 0 1px,
+    rgba(0, 0, 0, 0) 1px var(--scan-pitch)
+  );
+}
+#grille {
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 0, 64, var(--grille-a)) 0 1px,
+    rgba(0, 255, 110, var(--grille-a)) 1px 2px,
+    rgba(60, 120, 255, var(--grille-a)) 2px 3px
+  );
+  mix-blend-mode: soft-light;
+}
+#vignette {
+  border-radius: 14px / 22px;
+  box-shadow: inset 0 0 var(--vig-blur) rgba(0, 0, 0, var(--vig-a)),
+    inset 0 0 240px rgba(0, 0, 0, var(--vig-a2));
+  background: radial-gradient(140% 130% at 50% 50%, transparent 68%, rgba(0, 0, 0, var(--vig-a2)) 100%);
+}
+#glare {
+  background: radial-gradient(60% 42% at 22% 8%, rgba(255, 255, 255, var(--glare-a)), transparent 62%);
+  mix-blend-mode: screen;
+}
+#roll {
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, var(--roll-a)) 45%, transparent);
+  height: 26%;
+  top: -26%;
+  animation: roll 11s linear infinite;
+  will-change: transform;
+}
+@keyframes roll {
+  to {
+    transform: translateY(500%);
+  }
+}
+#bloomLayer {
+  backdrop-filter: blur(var(--bloom-blur)) brightness(var(--bloom-bright));
+  -webkit-backdrop-filter: blur(var(--bloom-blur)) brightness(var(--bloom-bright));
+  mix-blend-mode: screen;
+  opacity: var(--bloom-o);
+}
+
+/* --------------------------------------------------------------------------
+   DRAG PERFORMANCE
+
+   Three of the six overlays have to re-read what is underneath them every time
+   anything moves: the bloom (backdrop-filter) and the grille and glare
+   (mix-blend-mode). Measured on one machine, a window drag at 1440x900:
+
+     all six layers on ............ 83ms per frame   (12fps)
+     without bloom ................ 50ms
+     without bloom + grille ....... 33ms
+     without bloom + grille + glare 17ms             (60fps)
+     scanlines, vignette, roll .... free — plain paint, cached by the compositor
+
+   So those three come off for the duration of a drag and come straight back on
+   release. They are also the three faintest — 12%, 2.8% and 7% — while the two
+   you actually notice, the scanlines and the vignette, cost nothing and stay.
+   -------------------------------------------------------------------------- */
+body.dragging #bloomLayer,
+body.icon-dragging #bloomLayer,
+body.dragging #grille,
+body.icon-dragging #grille,
+body.dragging #glare,
+body.icon-dragging #glare {
+  display: none;
+}
+body.dragging,
+body.icon-dragging {
+  cursor: move;
+}
+body.dragging .win-body {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+body[data-scan='off'] #scanlines,
+body[data-grille='off'] #grille,
+body[data-vig='off'] #vignette,
+body[data-glare='off'] #glare,
+body[data-roll='off'] #roll,
+body[data-bloom='off'] #bloomLayer {
+  display: none;
+}
+
+body[data-flicker='on'] #stage {
+  animation: flick 0.5s ease-in-out infinite;
+}
+@keyframes flick {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: var(--flick);
+  }
+}
+
+body[data-ca='on'] #stage {
+  text-shadow: var(--ca) 0 rgba(255, 0, 60, var(--ca-a)),
+    calc(-1 * var(--ca)) 0 rgba(0, 220, 255, var(--ca-a));
+}
+
+body[data-phos='green'] #stage {
+  filter: grayscale(1) sepia(1) hue-rotate(58deg) saturate(var(--phos-sat)) brightness(1.04);
+}
+body[data-phos='amber'] #stage {
+  filter: grayscale(1) sepia(1) saturate(calc(var(--phos-sat) + 0.4)) hue-rotate(-14deg) brightness(1.04);
+}
+body[data-phos='mono'] #stage {
+  filter: grayscale(1) contrast(1.1);
+}

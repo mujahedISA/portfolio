@@ -1,0 +1,179 @@
+/* ==========================================================================
+   DESKTOP ICON HOVER ANIMATIONS
+
+   One movement per icon, chosen to suit what the icon actually is: the CD
+   spins, the phone rings, the TV loses signal. Each rule hangs off the class
+   `ico-<filename>` that src/appicon.ts puts on every icon, so to change an
+   icon's movement you edit one block here and nothing else.
+
+   Three rules this file follows:
+
+   1. Only on the desktop. The same icons appear 15px tall in title bars and
+      taskbar buttons, where a spinning CD would be noise.
+   2. Only with a real pointer — `@media (hover: hover)`. On a touch screen
+      "hover" sticks after a tap, so an animation would start and never stop.
+   3. Nothing here runs under prefers-reduced-motion; see responsive.css.
+   ========================================================================== */
+
+@media (hover: hover) and (pointer: fine) {
+  /* ---------------- 1. Clippy: a helpful wiggle ---------------- */
+  .icon:hover .ico-clippy {
+    animation: wiggle 0.6s ease-in-out infinite alternate;
+  }
+  @keyframes wiggle {
+    0% {
+      transform: translateY(0) rotate(0);
+    }
+    50% {
+      transform: translateY(-8px) rotate(5deg);
+    }
+    100% {
+      transform: translateY(0) rotate(-5deg);
+    }
+  }
+
+  /* ---------------- 2. CD: spins like a drive spinning up ---------------- */
+  .icon:hover .ico-cd {
+    animation: spin 1.5s linear infinite;
+  }
+  @keyframes spin {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* ---------------- 3. Telephone: rings ---------------- */
+  .icon:hover .ico-phone {
+    animation: ring 0.2s ease-in-out infinite;
+  }
+  @keyframes ring {
+    0%,
+    50%,
+    100% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(-15deg);
+    }
+    75% {
+      transform: rotate(15deg);
+    }
+  }
+
+  /* ---------------- 4. Folder: snappy lift ---------------- */
+  .icon .ico-folder {
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .icon:hover .ico-folder {
+    transform: scale(1.15) translateY(-5px);
+  }
+
+  /* ---------------- 5. TV: loses signal ---------------- */
+  .icon:hover .ico-tv {
+    animation: glitch-skew 0.3s linear infinite;
+  }
+  @keyframes glitch-skew {
+    0%,
+    60%,
+    100% {
+      transform: translate(0) skew(0deg);
+      filter: hue-rotate(0deg);
+    }
+    20% {
+      transform: translate(-2px, 1px) skew(-5deg);
+    }
+    40% {
+      transform: translate(2px, -1px) skew(5deg);
+      filter: hue-rotate(90deg);
+    }
+    80% {
+      transform: translate(-1px, 2px) skew(2deg);
+    }
+  }
+
+  /* ---------------- 6. Computer: the tube warms up ---------------- */
+  .icon:hover .ico-computer {
+    animation: crt-glow 1s infinite alternate ease-in-out;
+  }
+  @keyframes crt-glow {
+    0% {
+      filter: drop-shadow(0 0 0 rgba(0, 255, 255, 0)) brightness(1);
+    }
+    100% {
+      filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.7)) brightness(1.2);
+    }
+  }
+
+  /* ---------------- 7. Help book: levitates ---------------- */
+  .icon:hover .ico-book {
+    animation: levitate 1s ease-in-out infinite alternate;
+  }
+  @keyframes levitate {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-8px);
+    }
+  }
+
+  /* ---------------- 8. Notepad: scribbles ---------------- */
+  .icon .ico-notes {
+    transform-origin: top left;
+  }
+  .icon:hover .ico-notes {
+    animation: scribble 0.15s linear infinite alternate;
+  }
+  @keyframes scribble {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(5deg);
+    }
+  }
+
+  /* ---------------- 9. Framed picture: camera flash ---------------- */
+  .icon .ico-frame {
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  .icon:hover .ico-frame {
+    transform: scale(1.15) rotate(4deg);
+    animation: photo-flash 0.4s ease-out;
+  }
+  @keyframes photo-flash {
+    0%,
+    100% {
+      filter: brightness(1);
+    }
+    30% {
+      filter: brightness(1.8);
+    }
+  }
+
+  /* ---------------- 10. Paper stack: shuffles ---------------- */
+  .icon:hover .ico-paper {
+    animation: shuffle 0.4s ease-in-out;
+  }
+  @keyframes shuffle {
+    0%,
+    100% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+    25% {
+      transform: translate(-3px, -2px) rotate(-2deg);
+    }
+    50% {
+      transform: translate(2px, -1px) rotate(2deg);
+    }
+    75% {
+      transform: translate(-1px, -3px) rotate(-1deg);
+    }
+  }
+
+  /* While an icon is being dragged its animation would fight the drag. */
+  body.icon-dragging .icon .ico {
+    animation: none !important;
+    transform: none !important;
+  }
+}

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#008080" />
+
+<title>MUJAHED-DOS — Mujahed Issa · Data Analyst</title>
+<meta name="description" content="Interactive portfolio of Mujahed Issa, junior data analyst in Istanbul, rendered as a retro desktop OS on a 1996 CRT." />
+<meta name="author" content="Mujahed Issa" />
+
+<link rel="canonical" href="https://mujahedisa.github.io/portfolio/" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="MUJAHED-DOS — Mujahed Issa · Data Analyst" />
+<meta property="og:description" content="Interactive portfolio of Mujahed Issa, junior data analyst in Istanbul, rendered as a retro desktop OS on a 1996 CRT." />
+<meta property="og:image" content="./og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="A teal retro desktop with a grey window reading MUJAHED ISSA, DATA ANALYST." />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+<link rel="alternate icon" href="./favicon.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+
+<link rel="preload" href="./fonts/pressstart2p-latin.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="./fonts/vt323-latin.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="./fonts/fonts.css" />
+</head>
+
+<body
+  data-crt="soft" data-bg="teal"
+  data-scan="on" data-grille="on" data-vig="on" data-glare="on" data-roll="on" data-bloom="on"
+  data-flicker="off" data-ca="off"
+  data-phos="color" data-power="on" data-ghost="off" data-beep="off">
+
+<a class="skip" href="#desktop">Skip to desktop</a>
+
+<div id="monitorCase">
+  <span id="led" aria-hidden="true"></span>
+  <button id="powerBtn" type="button" aria-label="Monitor power"></button>
+
+  <div id="screen">
+    <div id="stage">
+      <div id="wallpaper" aria-hidden="true"></div>
+      <div id="wallpaperPrev" aria-hidden="true"></div>
+
+      <main id="desktop" tabindex="-1">
+        <h1 class="sr-only">Mujahed Issa — data analyst portfolio, presented as a retro desktop operating system.</h1>
+        <div id="icons" role="group" aria-label="Desktop icons"></div>
+        <div id="windows"></div>
+        <div id="dragghost" aria-hidden="true"></div>
+      </main>
+
+      <nav id="startmenu" aria-label="Start menu" hidden>
+        <div class="rail" aria-hidden="true"><b>MUJAHED-DOS</b></div>
+        <ul id="startlist"></ul>
+      </nav>
+
+      <footer id="taskbar">
+        <button id="start" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="startmenu"></button>
+        <span class="tsep" aria-hidden="true"></span>
+        <div id="tasks" aria-label="Open windows"></div>
+        <div id="tray">
+          <button id="trayMusic" type="button" aria-label="Open media player"></button>
+          <input id="vol" type="range" min="0" max="100" value="70" aria-label="Volume" />
+          <span id="clock" role="timer" aria-label="Clock">--:--</span>
+        </div>
+      </footer>
+    </div>
+
+    <div id="reveal" aria-hidden="true"></div>
+
+    <div class="crt" id="bloomLayer" aria-hidden="true"></div>
+    <div class="crt" id="grille" aria-hidden="true"></div>
+    <div class="crt" id="scanlines" aria-hidden="true"></div>
+    <div class="crt" id="roll" aria-hidden="true"></div>
+    <div class="crt" id="glare" aria-hidden="true"></div>
+    <div class="crt" id="vignette" aria-hidden="true"></div>
+
+    <pre id="boot" role="status" aria-label="System boot log"></pre>
+  </div>
+</div>
+
+<audio id="audio" preload="none"></audio>
+<p id="live" class="sr-only" role="status" aria-live="polite"></p>
+
+<noscript>
+  <div class="noscript">
+    <h2>MUJAHED ISSA — DATA ANALYST</h2>
+    <p>This portfolio is an interactive desktop and needs JavaScript. The same information is here:</p>
+    <ul>
+      <li><a href="https://github.com/mujahedISA">github.com/mujahedISA</a></li>
+      <li><a href="https://www.linkedin.com/in/mujahed-issa-278b0b17a">linkedin.com/in/mujahed-issa</a></li>
+      <li><a href="mailto:mujahed.issa2004@gmail.com">mujahed.issa2004@gmail.com</a></li>
+      <li><a href="tel:+905526411150">+90 552 641 11 50</a></li>
+      <li><a href="./Mujahed_Issa_Resume_2026.pdf" download>Download CV (PDF)</a></li>
+    </ul>
+  </div>
+</noscript>
+
+<script type="module" src="./src/main.ts"></script>
+</body>
+</html>

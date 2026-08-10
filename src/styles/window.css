@@ -1,0 +1,176 @@
+/* ==========================================================================
+   WINDOW — frame, title bar, body, status bar, resize grip.
+   ========================================================================== */
+
+.win {
+  position: absolute;
+  background: var(--face);
+  display: flex;
+  flex-direction: column;
+  min-width: 250px;
+  min-height: 140px;
+  border: 2px solid;
+  border-color: var(--hi) var(--dk) var(--dk) var(--hi);
+  box-shadow: inset 1px 1px 0 var(--face), inset -1px -1px 0 var(--sh), 2px 2px 0 rgba(0, 0, 0, 0.45);
+  animation: winIn 0.26s var(--ease) both;
+}
+@keyframes winIn {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* A finished animation with fill-mode `both` keeps applying its last keyframe,
+   and the animation origin beats inline styles. Left on, winIn's `transform:
+   none` silently cancels the transform that drags the window — the window would
+   not follow the pointer at all and would only jump on release. Once the open
+   animation has played, it comes off. */
+.win.settled {
+  animation: none !important;
+}
+.win[hidden] {
+  display: none;
+}
+
+.titlebar {
+  height: 22px;
+  flex: 0 0 22px;
+  margin: 2px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 2px 0 3px;
+  cursor: default;
+  background: linear-gradient(90deg, var(--title-a), var(--title-b));
+  touch-action: none;
+}
+.win:not(.active) .titlebar {
+  background: linear-gradient(90deg, var(--title-off-a), var(--title-off-b));
+}
+.titlebar svg,
+.titlebar img {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
+}
+.t-txt {
+  flex: 1;
+  font-family: var(--px);
+  font-size: 8px;
+  color: #fff;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tbtns {
+  display: flex;
+  gap: 2px;
+}
+.tbtn {
+  width: 17px;
+  height: 15px;
+  background: var(--face);
+  padding: 0;
+  cursor: pointer;
+  line-height: 1;
+  border: 2px solid;
+  border-color: var(--hi) var(--dk) var(--dk) var(--hi);
+  box-shadow: inset 1px 1px 0 var(--face), inset -1px -1px 0 var(--sh);
+  display: grid;
+  place-items: center;
+  font-size: 7px;
+}
+.tbtn:active {
+  border-color: var(--dk) var(--hi) var(--hi) var(--dk);
+  box-shadow: none;
+}
+
+/* Close is red, and only close. The other two stay system grey so the
+   dangerous one is the one that stands out. */
+.tbtn[data-action='close'] {
+  background: var(--danger);
+  color: #fff;
+  border-color: var(--danger-hi) var(--danger-dk) var(--danger-dk) var(--danger-hi);
+  box-shadow: inset 1px 1px 0 var(--danger), inset -1px -1px 0 var(--danger-dk);
+}
+.tbtn[data-action='close']:hover {
+  background: var(--danger-lit);
+  box-shadow: inset 1px 1px 0 var(--danger-lit), inset -1px -1px 0 var(--danger-dk);
+}
+.tbtn[data-action='close']:active {
+  border-color: var(--danger-dk) var(--danger-hi) var(--danger-hi) var(--danger-dk);
+  box-shadow: none;
+}
+
+.win-body {
+  flex: 1;
+  overflow: auto;
+  overscroll-behavior: contain;
+  margin: 0 2px;
+  padding: 8px 10px;
+  background: #fff;
+  -webkit-user-select: text;
+  user-select: text;
+  border: 2px solid;
+  border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+  line-height: 1.32;
+}
+
+.statusbar {
+  flex: 0 0 18px;
+  margin: 2px;
+  display: flex;
+  gap: 2px;
+  font-family: var(--px);
+  font-size: 6px;
+  color: #333;
+}
+.statusbar i {
+  flex: 1;
+  font-style: normal;
+  padding: 4px 5px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border: 2px solid;
+  border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+}
+.statusbar i:last-child {
+  flex: 0 0 90px;
+}
+
+.grip {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+  z-index: 3;
+  touch-action: none;
+  background: repeating-linear-gradient(
+    135deg,
+    transparent 0 2px,
+    var(--hi) 2px 4px,
+    transparent 4px 5px,
+    var(--sh) 5px 7px
+  );
+}
+.win.max .grip {
+  display: none;
+}
+
+#dragghost {
+  position: absolute;
+  z-index: var(--z-dragghost);
+  display: none;
+  pointer-events: none;
+  border: 2px dotted #fff;
+  mix-blend-mode: difference;
+}

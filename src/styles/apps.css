@@ -1,0 +1,206 @@
+/* ==========================================================================
+   APPS — media player, display (wallpaper) and monitor (CRT) control panels.
+   ========================================================================== */
+
+/* ---------------- MEDIA PLAYER ---------------- */
+.mp {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.mp-screen {
+  padding: 7px 9px;
+  background: #000;
+  color: var(--phosphor);
+  font-family: var(--px);
+  font-size: 7px;
+  line-height: 2.1;
+  border: 2px solid;
+  border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+}
+.mp-viz {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 26px;
+  margin-top: 6px;
+}
+.mp-viz i {
+  flex: 1;
+  height: 8%;
+  background-image: repeating-linear-gradient(180deg, var(--phosphor) 0 2px, #000 2px 3px);
+  transform-origin: bottom;
+}
+.mp-ctrl {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.mp-label {
+  font-family: var(--px);
+  font-size: 6px;
+}
+.mp-list {
+  max-height: 132px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: #fff;
+  border: 2px solid;
+  border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+}
+.mp-list button {
+  width: 100%;
+  padding: 3px 7px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: var(--term);
+  font-size: 17px;
+  text-align: left;
+  background: none;
+  border: 0;
+}
+.mp-list button:hover {
+  background: #dfdfdf;
+}
+.mp-list button[aria-current='true'] {
+  background: var(--sel);
+  color: #fff;
+}
+.mp-list em {
+  font-style: normal;
+  opacity: 0.8;
+  font-size: 15px;
+  white-space: nowrap;
+}
+.mp-empty {
+  padding: 8px;
+  font-size: 17px;
+  color: #444;
+}
+
+/* ---------------- DISPLAY (wallpaper) ---------------- */
+.bg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
+  gap: 7px;
+}
+.bg-opt {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  padding: 4px;
+  background: var(--face);
+  text-align: center;
+  border: 2px solid;
+  border-color: var(--hi) var(--dk) var(--dk) var(--hi);
+}
+.bg-opt[aria-pressed='true'] {
+  border-color: var(--dk) var(--hi) var(--hi) var(--dk);
+  background: var(--face-lit);
+}
+.bg-opt:active {
+  transform: translate3d(1px, 1px, 0);
+}
+.bg-opt .sw {
+  height: 52px;
+  border: 2px solid var(--dk);
+  margin-bottom: 4px;
+  background-size: cover;
+  background-position: center;
+}
+.bg-opt b {
+  font-family: var(--px);
+  font-size: 6px;
+  line-height: 1.6;
+  display: block;
+}
+
+/* Swatch previews for the CSS wallpapers. The `swatch` name in
+   src/content/wallpapers.ts points at one of these. A picture wallpaper does
+   not need one — it previews itself. */
+.sw-teal {
+  background: #008080;
+}
+.sw-dither {
+  background: repeating-conic-gradient(#000080 0 25%, #0000c8 0 50%) 0 0 / 4px 4px;
+}
+.sw-stars {
+  background: radial-gradient(1px 1px at 20% 30%, #fff, transparent),
+    radial-gradient(1px 1px at 70% 60%, #fff, transparent),
+    radial-gradient(1px 1px at 45% 78%, #fff, transparent),
+    linear-gradient(180deg, #05010f, #1a0742);
+}
+.sw-mtn {
+  background: linear-gradient(
+    180deg,
+    #2a0a4a 0 22%,
+    #b52a5a 22% 45%,
+    #ef5a3c 45% 58%,
+    #ffd76b 58% 70%,
+    #1d0b2e 70% 100%
+  );
+}
+.sw-grass {
+  background: linear-gradient(180deg, #5c94fc 0 70%, #00a800 70% 80%, #006800 80% 100%);
+}
+
+/* Error state: the wallpaper file named in content/wallpapers.ts is not on
+   disk yet. Says exactly which path to drop it at, and cannot be selected. */
+.bg-opt.missing {
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+/* Informational slot, not a control: flat, no bevel, no pressed state. */
+.bg-opt.slot {
+  cursor: default;
+  background: none;
+  border-color: var(--sh) var(--sh) var(--sh) var(--sh);
+  border-style: dotted;
+  opacity: 0.85;
+}
+
+.bg-opt.missing .sw,
+.bg-opt.slot .sw {
+  display: grid;
+  place-items: center;
+  padding: 4px;
+  background: repeating-linear-gradient(45deg, #6a6a6a 0 5px, #565656 5px 10px);
+  font-family: var(--px);
+  font-size: 5px;
+  line-height: 1.7;
+  color: #fff;
+  overflow-wrap: anywhere;
+}
+.bg-opt.slot .sw {
+  background: repeating-linear-gradient(45deg, #8a8a8a 0 5px, #7a7a7a 5px 10px);
+}
+
+/* ---------------- MONITOR (CRT settings) ---------------- */
+.opt {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 2px;
+  cursor: pointer;
+  font-size: 17px;
+}
+.opt input {
+  width: 13px;
+  height: 13px;
+  accent-color: var(--sel);
+  flex: 0 0 13px;
+}
+.row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.hint {
+  font-size: 16px;
+  margin: 6px 0 0;
+  color: #333;
+}

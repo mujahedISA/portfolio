@@ -1,0 +1,515 @@
+/* ==========================================================================
+   SHELL — wallpaper, desktop, icons, taskbar, start menu.
+   ========================================================================== */
+
+/* ---------------- WALLPAPER ---------------- */
+#wallpaper {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-wallpaper);
+  overflow: hidden;
+  background: var(--desk);
+}
+
+/* An image wallpaper paints itself through this layer. Kept separate from the
+   CSS-generated wallpapers so a missing file degrades to the solid desk colour
+   instead of a blank black screen. */
+#wallpaperImage {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease);
+}
+#wallpaperImage.on {
+  opacity: 1;
+}
+#wallpaperImage[data-fit='cover'] {
+  background-size: cover;
+}
+#wallpaperImage[data-fit='tile'] {
+  background-repeat: repeat;
+  background-size: auto;
+}
+#wallpaperImage[data-fit='center'] {
+  background-size: auto;
+}
+
+/* Picture wallpapers are 1600x900 and get stretched up on a big screen. Keep
+   the pixels chunky rather than letting the browser smooth them into mush —
+   the art is pixel art and should still look like it at any size. */
+#wallpaperImage {
+  image-rendering: pixelated;
+}
+
+/* --------------------------------------------------------------------------
+   CROSSFADE LAYER.
+
+   Sits directly on top of the wallpaper. When the wallpaper changes, this gets
+   a copy of the OLD one painted into it at full opacity, and then fades away —
+   so the new wallpaper is revealed through it. That is why switching works as
+   a real crossfade for both the CSS wallpapers and the picture ones, without
+   having to keep two full copies of the desktop around.
+   -------------------------------------------------------------------------- */
+#wallpaperPrev {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-wallpaper);
+  pointer-events: none;
+  opacity: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+}
+
+body[data-bg='teal'] #wallpaper {
+  background: #008080;
+}
+body[data-bg='dither'] #wallpaper {
+  background: repeating-conic-gradient(#000080 0 25%, #0000c8 0 50%) 0 0 / 6px 6px;
+}
+body[data-bg='stars'] #wallpaper {
+  background: linear-gradient(180deg, #05010f, #0d0230 70%, #1a0742);
+}
+body[data-bg='mtn'] #wallpaper {
+  background: linear-gradient(
+    180deg,
+    #2a0a4a 0 22%,
+    #6a1160 22% 38%,
+    #b52a5a 38% 50%,
+    #ef5a3c 50% 60%,
+    #ffa63c 60% 68%,
+    #ffd76b 68% 72%,
+    #1d0b2e 72% 100%
+  );
+}
+body[data-bg='grass'] #wallpaper {
+  background: linear-gradient(180deg, #5c94fc 0 74%, #00a800 74% 80%, #006800 80% 100%);
+}
+
+.star,
+.cloud,
+.sun,
+.mtn {
+  position: absolute;
+  display: none;
+}
+body[data-bg='stars'] .star {
+  display: block;
+}
+body[data-bg='grass'] .cloud {
+  display: block;
+}
+body[data-bg='mtn'] .sun,
+body[data-bg='mtn'] .mtn {
+  display: block;
+}
+
+.star {
+  width: 2px;
+  height: 2px;
+  background: #fff;
+  animation: tw 3s steps(2) infinite;
+}
+@keyframes tw {
+  0%,
+  100% {
+    opacity: 0.95;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+.sun {
+  left: 50%;
+  top: 26%;
+  width: 22vmin;
+  height: 22vmin;
+  margin-left: -11vmin;
+  border-radius: 50%;
+  background: repeating-linear-gradient(180deg, #ffe07a 0 6px, #ff8a3c 6px 12px);
+}
+.mtn {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 34%;
+  background: #1d0b2e;
+  clip-path: polygon(
+    0 100%, 0 42%, 9% 60%, 18% 28%, 27% 55%, 36% 18%, 46% 52%, 55% 30%,
+    64% 62%, 74% 34%, 84% 58%, 92% 40%, 100% 62%, 100% 100%
+  );
+}
+.cloud {
+  background: #fff;
+  box-shadow: 0 0 0 4px #fff, 8px -8px 0 4px #fff, 20px 0 0 4px #fff;
+  width: 26px;
+  height: 14px;
+  animation: float linear infinite;
+  will-change: transform;
+}
+@keyframes float {
+  from {
+    transform: translateX(-14vw);
+  }
+  to {
+    transform: translateX(114vw);
+  }
+}
+
+/* ---------------- DESKTOP + ICONS ---------------- */
+#desktop {
+  position: absolute;
+  inset: 0 0 var(--taskbar-h) 0;
+  z-index: var(--z-desktop);
+}
+
+#icons {
+  position: absolute;
+  inset: 8px auto 8px 8px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 2px;
+  max-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Once an icon has been dragged, the column becomes a free surface covering the
+   whole desktop. It must not swallow clicks meant for the desktop behind it, so
+   the container itself is transparent to the pointer and only the icons are not. */
+#icons.free {
+  inset: 8px;
+  display: block;
+  pointer-events: none;
+}
+#icons.free .icon {
+  position: absolute;
+  pointer-events: auto;
+}
+.icon.dragging {
+  z-index: 6;
+  cursor: grabbing;
+}
+
+.icon {
+  width: 96px;
+  padding: 6px 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  text-align: center;
+  background: none;
+  border: 0;
+  /* Hidden until the tube has warmed up. `body.booted` is added when the boot
+     log finishes, so the icons cascade in with the screen instead of being
+     already there behind the black. */
+  opacity: 0;
+}
+body.booted .icon {
+  animation: iconIn 0.42s var(--ease) both;
+  animation-delay: calc(0.34s + var(--i, 0) * var(--stagger));
+}
+/* A finished animation with fill-mode `both` keeps applying its last keyframe,
+   and the animation origin outranks inline styles — so `transform: none` from
+   iconIn would silently beat the transform used to drag an icon. Once the
+   cascade has played, the animation is taken off entirely. */
+.icon.settled {
+  animation: none !important;
+  opacity: 1;
+}
+@keyframes iconIn {
+  from {
+    opacity: 0;
+    transform: translate3d(-8px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.icon svg,
+.icon img {
+  width: 48px;
+  height: 48px;
+  display: block;
+}
+/* In the small chrome — title bars, taskbar, Start menu — a 64px icon is being
+   shrunk to 15px, and nearest-neighbour throws away most of the pixels. Smooth
+   scaling is the honest choice there. On the desktop the icons are near their
+   native size, so they keep the hard pixel edges the animations want. */
+.tk img,
+.titlebar img,
+#startmenu button img,
+#start img {
+  image-rendering: auto;
+}
+.icon img {
+  image-rendering: pixelated;
+}
+.icon:active svg,
+.icon:active img {
+  transform: translate3d(1px, 1px, 0);
+}
+/* A pressed icon must not fight a running hover animation. */
+.icon:hover:active svg,
+.icon:hover:active img {
+  transform: none;
+}
+.icon span {
+  font-family: var(--px);
+  font-size: 7px;
+  line-height: 1.7;
+  color: #fff;
+  letter-spacing: 0.02em;
+  padding: 2px 3px;
+  /* A full outline, not a single drop shadow. The picture wallpapers have
+     bright areas — a white label with only a bottom-right shadow disappears
+     against a cloud. */
+  text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
+  overflow-wrap: anywhere;
+}
+.icon[data-selected='true'] svg,
+.icon[data-selected='true'] img {
+  filter: brightness(0.72) saturate(1.5);
+}
+.icon[data-selected='true'] span {
+  background: var(--sel);
+  outline: 1px dotted #fff;
+  outline-offset: -2px;
+}
+
+/* ---------------- TASKBAR ---------------- */
+#taskbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--taskbar-h);
+  z-index: var(--z-taskbar);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 3px;
+  background: var(--face);
+  border-top: 2px solid var(--hi);
+  box-shadow: 0 -1px 0 var(--sh);
+}
+
+#start {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px 4px 5px;
+  cursor: pointer;
+  background: var(--face);
+  border: 2px solid;
+  border-color: var(--hi) var(--dk) var(--dk) var(--hi);
+  box-shadow: inset 1px 1px 0 var(--face), inset -1px -1px 0 var(--sh);
+}
+#start[aria-expanded='true'] {
+  border-color: var(--dk) var(--hi) var(--hi) var(--dk);
+  box-shadow: none;
+}
+#start svg,
+#start img {
+  width: 16px;
+  height: 16px;
+}
+
+.tsep {
+  width: 4px;
+  height: 60%;
+  border-left: 2px solid var(--sh);
+  border-right: 2px solid var(--hi);
+  flex: 0 0 4px;
+  margin: 0 2px;
+}
+
+#tasks {
+  flex: 1;
+  display: flex;
+  gap: 3px;
+  overflow: hidden;
+}
+.tk {
+  flex: 0 1 150px;
+  min-width: 40px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 6px;
+  cursor: pointer;
+  background: var(--face);
+  font-family: var(--px);
+  font-size: 7px;
+  white-space: nowrap;
+  overflow: hidden;
+  border: 2px solid;
+  border-color: var(--hi) var(--dk) var(--dk) var(--hi);
+  box-shadow: inset 1px 1px 0 var(--face), inset -1px -1px 0 var(--sh);
+}
+.tk svg,
+.tk img {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
+}
+.tk span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tk[aria-current='true'] {
+  border-color: var(--dk) var(--hi) var(--hi) var(--dk);
+  box-shadow: none;
+  background: repeating-conic-gradient(#bcbcbc 0 25%, #d6d6d6 0 50%) 0 0 / 4px 4px;
+}
+
+#tray {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 7px;
+  border: 2px solid;
+  border-color: var(--sh) var(--hi) var(--hi) var(--sh);
+}
+#trayMusic {
+  display: block;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  line-height: 0;
+}
+#trayMusic svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+#clock {
+  font-family: var(--px);
+  font-size: 7px;
+  min-width: 44px;
+  text-align: center;
+}
+input[type='range'] {
+  width: 80px;
+  accent-color: var(--sel);
+}
+
+/* ---------------- START MENU ---------------- */
+#startmenu {
+  position: absolute;
+  left: 3px;
+  bottom: calc(var(--taskbar-h) + 2px);
+  width: 238px;
+  z-index: var(--z-startmenu);
+  display: flex;
+  background: var(--face);
+  border: 2px solid;
+  border-color: var(--hi) var(--dk) var(--dk) var(--hi);
+  box-shadow: inset 1px 1px 0 var(--face), 2px 2px 0 rgba(0, 0, 0, 0.45);
+}
+#startmenu[hidden] {
+  display: none;
+}
+#startmenu .rail {
+  width: 22px;
+  flex: 0 0 22px;
+  background: linear-gradient(180deg, #000080, #1084d0);
+  display: grid;
+  place-items: center;
+}
+#startmenu .rail b {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--px);
+  font-size: 8px;
+  color: #fff;
+  letter-spacing: 0.2em;
+  padding: 8px 0;
+}
+#startmenu ul {
+  list-style: none;
+  margin: 0;
+  padding: 2px;
+  flex: 1;
+}
+#startmenu li {
+  margin: 0;
+}
+#startmenu button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 7px;
+  cursor: pointer;
+  font-family: var(--px);
+  font-size: 7px;
+  line-height: 1.6;
+  text-align: left;
+  background: none;
+  border: 0;
+}
+#startmenu button:hover,
+#startmenu button:focus-visible {
+  background: var(--sel);
+  color: #fff;
+  outline-color: #fff;
+}
+#startmenu button svg,
+#startmenu button img {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+#startmenu hr {
+  border: 0;
+  border-top: 2px solid var(--sh);
+  border-bottom: 2px solid var(--hi);
+  margin: 2px 4px;
+}
+
+/* ---------------- BOOT ---------------- */
+#boot {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-boot);
+  background: #000;
+  color: var(--face);
+  font-family: var(--term);
+  font-size: 19px;
+  line-height: 1.35;
+  padding: 22px 26px;
+  margin: 0;
+  white-space: pre-wrap;
+  overflow: hidden;
+}
+#boot[hidden] {
+  display: none;
+}
+#boot b {
+  color: #fff;
+}
+#boot .amber {
+  color: #ffb000;
+}
+#cursor {
+  display: inline-block;
+  width: 9px;
+  height: 16px;
+  background: var(--face);
+  vertical-align: -2px;
+  animation: blink 1s steps(2) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}

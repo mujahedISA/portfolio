@@ -1,0 +1,205 @@
+/* ==========================================================================
+   RESPONSIVE — the desktop metaphor degrades into a phone metaphor.
+
+   Below 820px the site becomes: home screen (icons) → full-screen app →
+   taskbar as app switcher. Windows stop being draggable because dragging a
+   window on a touch screen is a bad idea, not because the code gave up.
+   `body.is-mobile` is set from JS (matchMedia) so the window manager and the
+   stylesheet always agree on which mode is active.
+   ========================================================================== */
+
+@media (max-width: 820px) {
+  :root {
+    --bezel: 8px;
+    --taskbar-h: 40px;
+  }
+
+  #monitorCase::before {
+    content: none;
+  }
+  #led,
+  #powerBtn {
+    display: none;
+  }
+  #screen {
+    border-radius: 8px / 12px;
+  }
+
+  /* home screen: icons flow across, not down a single column */
+  #icons {
+    inset: 8px 8px auto 8px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: flex-start;
+    gap: 4px;
+    max-height: none;
+  }
+  .icon {
+    width: 33.333%;
+    max-width: 96px;
+    padding: 8px 3px;
+  }
+  .icon svg,
+  .icon img {
+    width: 48px;
+    height: 48px;
+  }
+  .icon span {
+    font-size: 7px;
+  }
+
+  /* one app at a time, filling the screen */
+  body.is-mobile .win {
+    inset: 6px 6px 6px 6px;
+    width: auto !important;
+    height: auto !important;
+    left: 6px !important;
+    top: 6px !important;
+  }
+  body.is-mobile .win:not(.active) {
+    display: none;
+  }
+  body.is-mobile .grip {
+    display: none;
+  }
+  body.is-mobile .titlebar {
+    height: 26px;
+    flex-basis: 26px;
+  }
+  body.is-mobile .tbtn {
+    width: 24px;
+    height: 20px;
+  }
+  body.is-mobile .win-body {
+    padding: 10px 11px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* status bar wastes a line on a phone */
+  body.is-mobile .statusbar i:first-child {
+    flex: 1;
+  }
+  body.is-mobile .statusbar i:last-child {
+    display: none;
+  }
+
+  #startmenu {
+    left: 3px;
+    right: 3px;
+    width: auto;
+    max-height: 70vh;
+    overflow: auto;
+  }
+  #startmenu button {
+    padding: 10px 8px;
+    font-size: 8px;
+  }
+
+  .tk {
+    flex: 0 1 46px;
+  }
+  .tk span {
+    display: none;
+  }
+  #vol {
+    display: none;
+  }
+  #tray {
+    gap: 8px;
+  }
+
+  .cols {
+    grid-template-columns: 1fr;
+  }
+  .tiles {
+    grid-template-columns: 1fr;
+  }
+  .win-body p {
+    font-size: 18px;
+  }
+}
+
+/* Very small phones: two icons per row reads better than three. */
+@media (max-width: 380px) {
+  .icon {
+    width: 50%;
+  }
+}
+
+/* Short landscape phones: give the content the height back. */
+@media (max-height: 460px) and (max-width: 900px) {
+  :root {
+    --bezel: 4px;
+    --taskbar-h: 32px;
+  }
+  .icon {
+    width: 76px;
+    padding: 4px 3px;
+  }
+  .icon svg,
+  .icon img {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* ==========================================================================
+   REDUCED MOTION — kill decorative movement, keep the interface legible.
+   The boot sequence still runs; it just stops blinking and types faster.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  #roll,
+  .star,
+  .cloud,
+  #led,
+  #cursor {
+    animation: none !important;
+  }
+  body[data-flicker='on'] #stage {
+    animation: none !important;
+  }
+  #cursor {
+    opacity: 1;
+  }
+  .win,
+  .win-body > * {
+    animation: none !important;
+  }
+  /* The screen reveal is skipped, not merely stopped — a paused #reveal would
+     leave the desktop behind a permanently black overlay. */
+  #reveal,
+  #reveal::after {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+  .icon,
+  body.booted .icon {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+  /* every per-icon hover animation, and the transition-driven ones */
+  .icon .ico,
+  .icon:hover .ico {
+    animation: none !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+  body[data-power='off'] #screen,
+  body[data-power='on'] #screen {
+    animation: none !important;
+  }
+  body[data-power='off'] #screen {
+    opacity: 0.06;
+  }
+  .btn:active,
+  .tile:active,
+  .bg-opt:active,
+  .icon:active svg {
+    transform: none;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}
