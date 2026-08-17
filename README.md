@@ -50,7 +50,8 @@ The build uses relative asset paths, so it runs from any subdirectory.
 - SOFT CRT is the default. Flicker and chromatic aberration are off by default.
   The Monitor window can turn the whole effect off.
 - No autoplay. No `localStorage`. No tracking. No backend.
-- Windows and desktop icons can both be dragged. Icon positions are not
-  persisted — nothing here writes to storage.
+- Windows and desktop icons can both be dragged. Icons snap to a grid, never
+  overlap, and can be rubber-band selected and moved as a group. Positions are
+  not persisted — nothing here writes to storage.
 - Respects `prefers-reduced-motion`: the boot reveal, the icon cascade and every
   hover animation are skipped, not merely paused.

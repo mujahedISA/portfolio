@@ -238,18 +238,31 @@ which row while you are running `npm run dev`. It will not fail silently.
 
 ---
 
-## Moving icons around
+## Moving and selecting icons
 
-Drag any desktop icon and drop it wherever you like. The column stays a tidy
-column until the first time you actually drag something; after that every icon
-keeps the position you give it.
+**Drag** any desktop icon and drop it wherever you like.
+
+**Select several** by dragging a box on empty desktop — a translucent rubber
+band appears and everything it touches gets picked up. Ctrl-drag adds to what is
+already selected, and Ctrl-clicking a single icon toggles it. Clicking empty
+desktop clears the lot.
+
+**Move a group** by dragging any icon that is part of the selection; the whole
+selection travels with it, keeping its spacing.
+
+**Icons snap to a grid and never overlap.** Drop one on an occupied square and
+it slides to the nearest free one. The grid size is measured from a real icon at
+runtime, so if you change the icon size in CSS the grid follows automatically —
+there is no magic number to keep in sync.
+
+The column stays a tidy column until the first time you actually drag something.
 
 Positions are **not saved**. Nothing in this project writes to storage, so a
 reload puts the desktop back to the layout every visitor sees first. If you want
 a different default order, reorder the array in `src/apps.ts` instead.
 
-Dragging is a mouse thing. On a phone a tap opens the app, which is what a tap
-should do.
+All of this is mouse-only. On a phone a tap opens the app, which is what a tap
+should do — there is no rubber band and no dragging.
 
 ---
 

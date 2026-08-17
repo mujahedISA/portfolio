@@ -195,6 +195,19 @@ body[data-bg='mtn'] .mtn {
   cursor: grabbing;
 }
 
+/* Rubber-band selection. Translucent fill so you can see what you are about to
+   catch, with a hard 1px edge to keep it in the same visual language as the
+   rest of the chrome. */
+#marquee {
+  position: absolute;
+  z-index: 5;
+  display: none;
+  pointer-events: none;
+  background: rgba(0, 0, 128, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 64, 0.55);
+}
+
 .icon {
   width: 96px;
   padding: 6px 3px;
